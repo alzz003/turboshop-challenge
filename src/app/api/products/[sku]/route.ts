@@ -19,12 +19,11 @@ export async function GET(
   context: ProductDetailRouteContext,
 ) {
   const { sku } = await context.params;
-  const decodedSku = decodeURIComponent(sku);
 
   const providerResults = await Promise.allSettled(
     providerAdapters.map(async (adapter) => ({
       provider: adapter.provider,
-      products: await adapter.getBySku(decodedSku).catch((error: unknown) => {
+      products: await adapter.getBySku(sku).catch((error: unknown) => {
         throw {
           provider: adapter.provider,
           error,
@@ -39,7 +38,7 @@ export async function GET(
   for (const result of providerResults) {
     if (result.status === "fulfilled") {
       products.push(
-        ...result.value.products.filter((product) => product.sku === decodedSku),
+        ...result.value.products.filter((product) => product.sku === sku),
       );
       continue;
     }

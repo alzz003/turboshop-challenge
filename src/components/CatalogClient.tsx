@@ -15,7 +15,7 @@ import { providerLabel } from "@/lib/utils";
 const PAGE_SIZE = 12;
 const SEARCH_DEBOUNCE_MS = 400;
 const CATALOG_POLLING_MS = 20000;
-const CLIENT_REQUEST_TIMEOUT_MS = 8000;
+const CLIENT_REQUEST_TIMEOUT_MS = 10000;
 
 type CatalogState = {
   products: NormalizedProduct[];

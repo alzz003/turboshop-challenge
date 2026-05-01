@@ -1,4 +1,4 @@
-export const DEFAULT_PROVIDER_TIMEOUT_MS = 9000;
+export const DEFAULT_PROVIDER_TIMEOUT_MS = 8000;
 
 const DEFAULT_PROVIDERS_BASE_URL = "https://web-production-84144.up.railway.app";
 
@@ -58,7 +58,11 @@ export async function fetchProviderJson<T>(
       throw new ProviderHttpError(url, response.status, response.statusText);
     }
 
-    return (await response.json()) as T;
+    try {
+      return (await response.json()) as T;
+    } catch {
+      throw new ProviderHttpError(url, response.status, "Invalid JSON response");
+    }
   } catch (error) {
     if (error instanceof Error && error.name === "AbortError") {
       throw new ProviderTimeoutError(url, timeoutMs);

@@ -4,10 +4,7 @@ import { providerLabel } from "@/lib/utils";
 
 export function ProductCard({ product }: { product: NormalizedProduct }) {
   const bestOffer = getBestOffer(product.offers);
-  const totalStock = product.offers.reduce(
-    (total, offer) => total + (offer.stock ?? 0),
-    0,
-  );
+  const totalStock = formatTotalStock(product.offers);
 
   return (
     <article className="product-card">
@@ -100,4 +97,14 @@ function formatOfferSummary(offer: ProviderOffer): string {
   const stock = offer.stock === null ? "stock sin dato" : `${offer.stock} en stock`;
 
   return `${price} - ${stock}`;
+}
+
+function formatTotalStock(offers: ProviderOffer[]): string {
+  if (offers.every((offer) => offer.stock === null)) {
+    return "Consultar";
+  }
+
+  const totalStock = offers.reduce((total, offer) => total + (offer.stock ?? 0), 0);
+
+  return String(totalStock);
 }

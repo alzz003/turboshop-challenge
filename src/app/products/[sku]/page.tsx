@@ -11,5 +11,5 @@ export default async function ProductDetailPage({
 }: ProductDetailPageProps) {
   const { sku } = await params;
 
-  return <ProductDetailClient sku={decodeURIComponent(sku)} />;
+  return <ProductDetailClient sku={sku} />;
 }

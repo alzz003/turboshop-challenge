@@ -66,6 +66,8 @@ export function SearchFilters({
           name="year"
           type="text"
           inputMode="numeric"
+          pattern="\d*"
+          maxLength={4}
           value={filters.year ?? ""}
           onChange={(event) =>
             onChange({ ...filters, year: event.currentTarget.value })

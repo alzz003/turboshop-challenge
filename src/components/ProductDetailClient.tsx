@@ -11,7 +11,7 @@ import type {
 import { providerLabel } from "@/lib/utils";
 
 const DETAIL_POLLING_MS = 15000;
-const CLIENT_REQUEST_TIMEOUT_MS = 8000;
+const CLIENT_REQUEST_TIMEOUT_MS = 10000;
 
 type DetailState = {
   product: NormalizedProduct | null;
@@ -81,7 +81,7 @@ export function ProductDetailClient({ sku }: { sku: string }) {
           isLoading: false,
           isRefreshing: false,
           error: null,
-          lastUpdatedAt: new Date().toLocaleTimeString("es-UY", {
+          lastUpdatedAt: new Date().toLocaleTimeString("es-CL", {
             hour: "2-digit",
             minute: "2-digit",
             second: "2-digit",
