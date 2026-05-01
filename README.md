@@ -176,7 +176,7 @@ Las actualizaciones en vivo se implementan con polling para mantener la solució
 
 El catálogo refresca datos aproximadamente cada 20 segundos. La vista de detalle refresca ofertas aproximadamente cada 15 segundos. En ambos casos, el polling se pausa si el tab no está visible usando `document.visibilityState`, para evitar requests innecesarios.
 
-No se usan WebSockets porque el requisito es reflejar cambios de precio y stock sin recargar la página, no tener comunicación en tiempo real de baja latencia. Polling es más fácil de explicar, probar y mantener para esta escala.
+Las actualizaciones se implementan mediante polling periódico desde el frontend contra endpoints internos. Para el alcance del challenge, esta estrategia mantiene precio y stock actualizados sin recargar la página y conserva una arquitectura simple de operar y desplegar.
 
 ## Tradeoffs conocidos
 
@@ -185,3 +185,5 @@ La paginación del catálogo opera sobre una muestra combinada. En cada request 
 La compatibilidad de vehículos está simplificada al primer vehículo compatible encontrado. Los proveedores devuelven estructuras distintas y a veces listas de compatibilidad largas; para mantener la UI simple, el catálogo muestra un modelo/año representativo.
 
 El matching entre proveedores se hace solo por coincidencia exacta de SKU. No se hace matching por nombre, marca, categoría ni similitud textual, porque podría agrupar repuestos distintos de forma incorrecta. Si el mismo SKU aparece en más de un proveedor, se muestra un único `NormalizedProduct` con varias `offers`; si solo aparece en un proveedor, se muestra con una sola oferta.
+
+Como mejora futura, agregaría validación runtime en cada adapter para detectar cambios de contrato en las APIs externas de forma más explícita. Hoy los adapters aíslan el impacto de esos cambios, pero una capa de validación permitiría reportar errores más precisos si un proveedor renombra campos críticos como SKU, precio o stock.
