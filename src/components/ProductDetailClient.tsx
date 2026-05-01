@@ -246,7 +246,7 @@ function MetaItem({
 function formatProviderErrors(errors: ProviderError[]): string {
   const providerNames = errors.map((error) => providerLabel(error.provider));
 
-  return `${providerNames.join(", ")} no respondieron correctamente.`;
+  return `${providerNames.join(", ")} no respondieron correctamente. La información puede estar incompleta.`;
 }
 
 function getUserFriendlyDetailError(

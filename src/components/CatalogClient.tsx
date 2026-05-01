@@ -119,7 +119,7 @@ export function CatalogClient() {
           isRefreshing: false,
           error: null,
         }));
-      } catch (error) {
+      } catch {
         if (controller.signal.aborted && !didTimeout) {
           return;
         }
@@ -132,8 +132,11 @@ export function CatalogClient() {
           providerErrors: currentState.providerErrors,
           isLoading: false,
           isRefreshing: false,
-          error:
-            error instanceof Error ? error.message : "No pudimos cargar el catálogo.",
+          error: getUserFriendlyCatalogError(
+            didTimeout,
+            controller.signal.aborted,
+            currentState.products.length > 0,
+          ),
         }));
       } finally {
         window.clearTimeout(timeoutId);
@@ -344,7 +347,6 @@ function FloatingCatalogStatus({
         <section className="floating-status info" role="status">
           <div>
             <strong>Actualizando catálogo</strong>
-            <span>Precios y stock se refrescan sin recargar la página.</span>
           </div>
         </section>
       ) : null}
@@ -387,6 +389,22 @@ function formatProviderErrors(errors: ProviderError[]): string {
   const providerNames = errors.map((error) => providerLabel(error.provider));
 
   return `${providerNames.join(", ")} no respondieron correctamente. El total puede variar.`;
+}
+
+function getUserFriendlyCatalogError(
+  didTimeout: boolean,
+  wasAborted: boolean,
+  hasCurrentProducts: boolean,
+): string {
+  if (didTimeout || wasAborted) {
+    return hasCurrentProducts
+      ? "La actualización tardó más de lo esperado. Podés seguir viendo estos resultados o tocar Reintentar."
+      : "La consulta tardó más de lo esperado. Probá tocar Reintentar en unos segundos.";
+  }
+
+  return hasCurrentProducts
+    ? "No pudimos actualizar el catálogo. Podés seguir viendo estos resultados o tocar Reintentar."
+    : "No pudimos cargar el catálogo en este momento. Probá tocar Reintentar.";
 }
 
 function providerLabel(provider: ProviderError["provider"]): string {
