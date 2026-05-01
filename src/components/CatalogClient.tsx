@@ -111,10 +111,7 @@ export function CatalogClient() {
 
         setState((currentState) => ({
           products: data.products,
-          pagination:
-            isSilentRefresh && currentState.pagination
-              ? currentState.pagination
-              : data.pagination,
+          pagination: data.pagination,
           providerErrors: data.errors,
           isLoading: false,
           isRefreshing: false,
