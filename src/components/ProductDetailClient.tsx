@@ -97,9 +97,7 @@ export function ProductDetailClient({ sku }: { sku: string }) {
           isRefreshing: false,
           error: currentState.product
             ? null
-            : error instanceof Error
-              ? error.message
-              : "No pudimos cargar el detalle del producto.",
+            : getUserFriendlyDetailError(error, didTimeout, controller.signal.aborted),
         }));
       } finally {
         window.clearTimeout(timeoutId);
@@ -249,6 +247,18 @@ function formatProviderErrors(errors: ProviderError[]): string {
   const providerNames = errors.map((error) => providerLabel(error.provider));
 
   return `${providerNames.join(", ")} no respondieron correctamente.`;
+}
+
+function getUserFriendlyDetailError(
+  error: unknown,
+  didTimeout: boolean,
+  wasAborted: boolean,
+): string {
+  if (didTimeout || wasAborted) {
+    return "La consulta tardó más de lo esperado. Probá tocar Reintentar en unos segundos.";
+  }
+
+  return "No pudimos cargar el producto en este momento. Probá tocar Reintentar.";
 }
 
 function providerLabel(provider: ProviderError["provider"]): string {
