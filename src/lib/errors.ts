@@ -23,8 +23,7 @@ export function toProviderError(error: unknown): ProviderError {
 
   return {
     provider,
-    message:
-      originalError instanceof Error ? originalError.message : "Error desconocido.",
+    message: "El proveedor no respondió correctamente.",
   };
 }
 

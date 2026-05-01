@@ -1,5 +1,9 @@
 # Marketplace de repuestos
 
+## Demo
+
+Aplicación desplegada: https://turboshop-challenge-production.up.railway.app
+
 ## Qué hace la app
 
 Esta app es un marketplace web de repuestos que consulta catálogos de varios proveedores públicos brindados por Turboshop, normaliza sus respuestas y muestra un catálogo unificado con búsqueda, filtros básicos, paginación, precio, stock y proveedores disponibles.
@@ -65,7 +69,7 @@ Frontend → /api/products → adapters → APIs de Turboshop
 
 La solución usa Next.js con TypeScript en un solo proyecto. Los route handlers de Next.js funcionan como backend Node.js propio, y las páginas/componentes funcionan como frontend React.
 
-Elegi esta arquitectura en lugar de un backend separado con Express o NestJS porque el challenge se puede resolver de forma más simple con una sola app: menos configuración, menos scripts y un despliegue más directo. La separación importante igual se mantiene: el frontend consume endpoints internos, los endpoints internos llaman adapters, y los adapters conocen los formatos reales de cada proveedor.
+Elegí esta arquitectura en lugar de un backend separado con Express o NestJS porque el challenge se puede resolver de forma más simple con una sola app: menos configuración, menos scripts y un despliegue más directo. La separación importante igual se mantiene: el frontend consume endpoints internos, los endpoints internos llaman adapters, y los adapters conocen los formatos reales de cada proveedor.
 
 El frontend no consume las APIs externas directamente. Esto permite cambiar o arreglar un proveedor sin tocar la UI, siempre que mantengamos estable nuestro contrato normalizado.
 
@@ -172,11 +176,9 @@ Los endpoints devuelven HTTP `200` cuando nuestro backend pudo construir una res
 
 ## Actualizaciones en vivo
 
-Las actualizaciones en vivo se implementan con polling para mantener la solución simple y robusta dentro del alcance del challenge.
-
 El catálogo refresca datos aproximadamente cada 20 segundos. La vista de detalle refresca ofertas aproximadamente cada 15 segundos. En ambos casos, el polling se pausa si el tab no está visible usando `document.visibilityState`, para evitar requests innecesarios.
 
-Las actualizaciones se implementan mediante polling periódico desde el frontend contra endpoints internos. Para el alcance del challenge, esta estrategia mantiene precio y stock actualizados sin recargar la página y conserva una arquitectura simple de operar y desplegar.
+Para el alcance del challenge, esta estrategia mantiene precio y stock actualizados sin recargar la página y conserva una arquitectura simple de operar y desplegar.
 
 ## Tradeoffs conocidos
 
