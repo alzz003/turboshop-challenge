@@ -1,4 +1,5 @@
 import type { NormalizedProduct, ProviderOffer } from "@/lib/types";
+import { providerLabel } from "@/lib/utils";
 
 export function ProductOffers({ product }: { product: NormalizedProduct }) {
   const sortedOffers = [...product.offers].sort((firstOffer, secondOffer) => {
@@ -60,14 +61,4 @@ function formatPrice(offer: ProviderOffer): string {
 
 function formatStock(offer: ProviderOffer): string {
   return offer.stock === null ? "Sin dato" : String(offer.stock);
-}
-
-function providerLabel(provider: ProviderOffer["provider"]): string {
-  const labels: Record<ProviderOffer["provider"], string> = {
-    autopartsplus: "AutoPartsPlus",
-    repuestosmax: "RepuestosMax",
-    globalparts: "GlobalParts",
-  };
-
-  return labels[provider];
 }

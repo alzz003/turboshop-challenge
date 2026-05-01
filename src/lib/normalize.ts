@@ -21,7 +21,7 @@ export function mergeProductsBySku(
     }
 
     existingProduct.offers.push(...product.offers);
-    fillMissingProductFields(existingProduct, product);
+    fillFromSource(existingProduct, product);
   }
 
   return Array.from(productsBySku.values());
@@ -85,7 +85,7 @@ export function paginateProducts(
   };
 }
 
-function fillMissingProductFields(
+function fillFromSource(
   target: NormalizedProduct,
   source: NormalizedProduct,
 ): void {

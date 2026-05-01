@@ -8,6 +8,7 @@ import type {
   ProductDetailResponse,
   ProviderError,
 } from "@/lib/types";
+import { providerLabel } from "@/lib/utils";
 
 const DETAIL_POLLING_MS = 15000;
 const CLIENT_REQUEST_TIMEOUT_MS = 8000;
@@ -259,14 +260,4 @@ function getUserFriendlyDetailError(
   }
 
   return "No pudimos cargar el producto en este momento. Probá tocar Reintentar.";
-}
-
-function providerLabel(provider: ProviderError["provider"]): string {
-  const labels: Record<ProviderError["provider"], string> = {
-    autopartsplus: "AutoPartsPlus",
-    repuestosmax: "RepuestosMax",
-    globalparts: "GlobalParts",
-  };
-
-  return labels[provider];
 }

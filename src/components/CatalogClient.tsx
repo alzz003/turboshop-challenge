@@ -10,6 +10,7 @@ import type {
   ProviderError,
   ProductsResponse,
 } from "@/lib/types";
+import { providerLabel } from "@/lib/utils";
 
 const PAGE_SIZE = 12;
 const SEARCH_DEBOUNCE_MS = 400;
@@ -64,10 +65,10 @@ export function CatalogClient() {
       limit: String(PAGE_SIZE),
     });
 
-    setOptionalParam(params, "search", debouncedSearch);
-    setOptionalParam(params, "brand", filters.brand);
-    setOptionalParam(params, "model", filters.model);
-    setOptionalParam(params, "year", filters.year);
+    appendParam(params, "search", debouncedSearch);
+    appendParam(params, "brand", filters.brand);
+    appendParam(params, "model", filters.model);
+    appendParam(params, "year", filters.year);
 
     return params.toString();
   }, [debouncedSearch, filters.brand, filters.model, filters.year, page]);
@@ -104,7 +105,7 @@ export function CatalogClient() {
         });
         const data = (await response.json()) as ProductsResponse;
 
-        if (!response.ok || data.products.length === 0 && data.errors.length > 0) {
+        if (!response.ok || (data.products.length === 0 && data.errors.length > 0)) {
           throw new Error("No pudimos cargar el catálogo.");
         }
 
@@ -132,7 +133,7 @@ export function CatalogClient() {
           providerErrors: currentState.providerErrors,
           isLoading: false,
           isRefreshing: false,
-          error: getUserFriendlyCatalogError(
+          error: catalogErrorMessage(
             didTimeout,
             controller.signal.aborted,
             currentState.products.length > 0,
@@ -168,7 +169,7 @@ export function CatalogClient() {
   }, [query, retryKey]);
 
   const hasProducts = state.products.length > 0;
-  const paginationRange = getPaginationRange(state.pagination);
+  const paginationRange = paginationRangeLabel(state.pagination);
 
   return (
     <main className="catalog-shell" aria-busy={state.isLoading}>
@@ -373,7 +374,7 @@ function CatalogSkeleton() {
   );
 }
 
-function setOptionalParam(
+function appendParam(
   params: URLSearchParams,
   key: string,
   value?: string,
@@ -391,7 +392,7 @@ function formatProviderErrors(errors: ProviderError[]): string {
   return `${providerNames.join(", ")} no respondieron correctamente. El total puede variar.`;
 }
 
-function getUserFriendlyCatalogError(
+function catalogErrorMessage(
   didTimeout: boolean,
   wasAborted: boolean,
   hasCurrentProducts: boolean,
@@ -407,17 +408,7 @@ function getUserFriendlyCatalogError(
     : "No pudimos cargar el catálogo en este momento. Probá tocar Reintentar.";
 }
 
-function providerLabel(provider: ProviderError["provider"]): string {
-  const labels: Record<ProviderError["provider"], string> = {
-    autopartsplus: "AutoPartsPlus",
-    repuestosmax: "RepuestosMax",
-    globalparts: "GlobalParts",
-  };
-
-  return labels[provider];
-}
-
-function getPaginationRange(pagination: Pagination | null): string {
+function paginationRangeLabel(pagination: Pagination | null): string {
   if (!pagination || pagination.totalItems === 0) {
     return "Sin productos para mostrar";
   }

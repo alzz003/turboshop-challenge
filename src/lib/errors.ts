@@ -2,8 +2,8 @@ import { ProviderHttpError, ProviderTimeoutError } from "@/lib/http";
 import { PROVIDERS, type ProviderError, type ProviderName } from "@/lib/types";
 
 export function toProviderError(error: unknown): ProviderError {
-  const provider = getProviderFromRejectedValue(error);
-  const originalError = getOriginalError(error);
+  const provider = extractProviderName(error);
+  const originalError = extractOriginalError(error);
 
   if (originalError instanceof ProviderTimeoutError) {
     return {
@@ -28,7 +28,7 @@ export function toProviderError(error: unknown): ProviderError {
   };
 }
 
-function getProviderFromRejectedValue(error: unknown): ProviderName {
+function extractProviderName(error: unknown): ProviderName {
   if (
     typeof error === "object" &&
     error !== null &&
@@ -42,7 +42,7 @@ function getProviderFromRejectedValue(error: unknown): ProviderName {
   return "autopartsplus";
 }
 
-function getOriginalError(error: unknown): unknown {
+function extractOriginalError(error: unknown): unknown {
   if (typeof error === "object" && error !== null && "error" in error) {
     return error.error;
   }

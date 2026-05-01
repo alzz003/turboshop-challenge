@@ -1,5 +1,6 @@
 import Link from "next/link";
 import type { NormalizedProduct, ProviderOffer } from "@/lib/types";
+import { providerLabel } from "@/lib/utils";
 
 export function ProductCard({ product }: { product: NormalizedProduct }) {
   const bestOffer = getBestOffer(product.offers);
@@ -99,14 +100,4 @@ function formatOfferSummary(offer: ProviderOffer): string {
   const stock = offer.stock === null ? "stock sin dato" : `${offer.stock} en stock`;
 
   return `${price} - ${stock}`;
-}
-
-function providerLabel(provider: ProviderOffer["provider"]): string {
-  const labels: Record<ProviderOffer["provider"], string> = {
-    autopartsplus: "AutoPartsPlus",
-    repuestosmax: "RepuestosMax",
-    globalparts: "GlobalParts",
-  };
-
-  return labels[provider];
 }

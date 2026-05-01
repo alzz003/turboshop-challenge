@@ -1,4 +1,5 @@
 import { fetchProviderJson } from "@/lib/http";
+import { formatYearRange } from "@/lib/providers/utils";
 import type { NormalizedProduct } from "@/lib/types";
 
 type GlobalPartsItem = {
@@ -165,15 +166,4 @@ function normalizeGlobalPartsItems(
       },
     ];
   });
-}
-
-function formatYearRange(
-  startYear?: number,
-  endYear?: number,
-): string | undefined {
-  if (startYear && endYear) {
-    return startYear === endYear ? String(startYear) : `${startYear}-${endYear}`;
-  }
-
-  return startYear ? String(startYear) : undefined;
 }
