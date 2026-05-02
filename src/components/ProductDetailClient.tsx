@@ -55,7 +55,7 @@ export function ProductDetailClient({ sku }: { sku: string }) {
       setState((currentState) => ({
         ...currentState,
         isLoading: !options.silent && !currentState.product,
-        isRefreshing: Boolean(options.silent) && Boolean(currentState.product),
+        isRefreshing: Boolean(currentState.product),
         error: null,
       }));
 
