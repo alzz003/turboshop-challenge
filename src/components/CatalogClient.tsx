@@ -37,7 +37,7 @@ export function CatalogClient() {
   const [filters, setFilters] = useState<ProductFilters>(initialFilters);
   const [debouncedSearch, setDebouncedSearch] = useState(filters.search ?? "");
   const [page, setPage] = useState(1);
-  const [retryKey, setRetryKey] = useState(0);
+  const [reloadKey, setReloadKey] = useState(0);
   const [state, setState] = useState<CatalogState>({
     products: [],
     pagination: null,
@@ -163,7 +163,7 @@ export function CatalogClient() {
       window.clearInterval(intervalId);
       document.removeEventListener("visibilitychange", handleVisibilityChange);
     };
-  }, [query, retryKey]);
+  }, [query, reloadKey]);
 
   const hasProducts = state.products.length > 0;
   const paginationRange = paginationRangeLabel(state.pagination);
@@ -196,7 +196,7 @@ export function CatalogClient() {
         error={state.error}
         isRefreshing={state.isRefreshing}
         providerErrors={state.providerErrors}
-        onRetry={() => setRetryKey((currentKey) => currentKey + 1)}
+        onRetry={() => setReloadKey((currentKey) => currentKey + 1)}
       />
 
       {state.error && !hasProducts ? (
@@ -208,7 +208,7 @@ export function CatalogClient() {
           <button
             className="button primary"
             type="button"
-            onClick={() => setRetryKey((currentKey) => currentKey + 1)}
+            onClick={() => setReloadKey((currentKey) => currentKey + 1)}
           >
             Reintentar
           </button>

@@ -23,8 +23,8 @@ type DetailState = {
 };
 
 export function ProductDetailClient({ sku }: { sku: string }) {
-  const hasProductRef = useRef(false);
-  const [retryKey, setRetryKey] = useState(0);
+  const hasLoadedProductRef = useRef(false);
+  const [reloadKey, setReloadKey] = useState(0);
   const [state, setState] = useState<DetailState>({
     product: null,
     providerErrors: [],
@@ -73,7 +73,7 @@ export function ProductDetailClient({ sku }: { sku: string }) {
           throw new Error("No pudimos cargar el detalle del producto.");
         }
 
-        hasProductRef.current = Boolean(data.product);
+        hasLoadedProductRef.current = Boolean(data.product);
 
         setState({
           product: data.product,
@@ -98,7 +98,7 @@ export function ProductDetailClient({ sku }: { sku: string }) {
           isRefreshing: false,
           error: currentState.product
             ? null
-            : getUserFriendlyDetailError(error, didTimeout, controller.signal.aborted),
+            : detailErrorMessage(error, didTimeout, controller.signal.aborted),
         }));
       } finally {
         window.clearTimeout(timeoutId);
@@ -109,13 +109,13 @@ export function ProductDetailClient({ sku }: { sku: string }) {
     loadProduct();
 
     const intervalId = window.setInterval(() => {
-      if (document.visibilityState === "visible" && hasProductRef.current) {
+      if (document.visibilityState === "visible" && hasLoadedProductRef.current) {
         loadProduct({ silent: true });
       }
     }, DETAIL_POLLING_MS);
 
     function handleVisibilityChange() {
-      if (document.visibilityState === "visible" && hasProductRef.current) {
+      if (document.visibilityState === "visible" && hasLoadedProductRef.current) {
         loadProduct({ silent: true });
       }
     }
@@ -127,7 +127,7 @@ export function ProductDetailClient({ sku }: { sku: string }) {
       window.clearInterval(intervalId);
       document.removeEventListener("visibilitychange", handleVisibilityChange);
     };
-  }, [sku, retryKey]);
+  }, [sku, reloadKey]);
 
   return (
     <main className="detail-shell" aria-busy={state.isLoading || state.isRefreshing}>
@@ -146,7 +146,7 @@ export function ProductDetailClient({ sku }: { sku: string }) {
           <button
             className="button primary"
             type="button"
-            onClick={() => setRetryKey((currentKey) => currentKey + 1)}
+            onClick={() => setReloadKey((currentKey) => currentKey + 1)}
           >
             Reintentar
           </button>
@@ -200,7 +200,7 @@ export function ProductDetailClient({ sku }: { sku: string }) {
                 className="button secondary"
                 type="button"
                 disabled={state.isLoading || state.isRefreshing}
-                onClick={() => setRetryKey((currentKey) => currentKey + 1)}
+                onClick={() => setReloadKey((currentKey) => currentKey + 1)}
               >
                 Actualizar ahora
               </button>
@@ -250,7 +250,7 @@ function formatProviderErrors(errors: ProviderError[]): string {
   return `${providerNames.join(", ")} no respondieron correctamente. La información puede estar incompleta.`;
 }
 
-function getUserFriendlyDetailError(
+function detailErrorMessage(
   error: unknown,
   didTimeout: boolean,
   wasAborted: boolean,
